@@ -17,19 +17,22 @@ def getDogs(offset, cur):
     data = json.loads(page.text)
     return data
 
-def setUp(data, off, cur, conn): 
+def setUp(data, cur, conn): 
     cur.execute("CREATE TABLE IF NOT EXISTS Dog_Breeds (id INTEGER PRIMARY KEY, name TEXT, temperament TEXT, life_span TEXT, weight FLOAT)")
     conn.commit()
 
-    count = 1
+    t = 'temperament'
+
     for x in data: 
         weight = x['weight']['imperial']
-        id = int(off) + count
+        id = x['id']
         name = x['name']
         life = x['life_span']
-        temp = (x['temperament']).split(',')[0]
+        if t in x:
+            temp = (x['temperament']).split(',')[0]
+        else: 
+            continue
         cur.execute("INSERT OR IGNORE INTO Dog_Breeds (id, name, temperament, life_span, weight) VALUES(?,?,?,?,?)", (id, name, temp, life, weight))
-        count += 1
 
     conn.commit()
 
@@ -43,11 +46,12 @@ def main():
         cur.execute('SELECT id FROM Dog_Breeds WHERE id = (SELECT MAX(id) FROM Dog_Breeds)')
         start = cur.fetchone()
         off = start[0]
+        print(off)
     except: 
         off = 0
 
     x = getDogs(off, cur) 
-    setUp(x, off, cur, conn)
+    setUp(x, cur, conn)
 
     conn.close()
 
