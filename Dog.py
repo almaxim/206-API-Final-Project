@@ -3,9 +3,6 @@ import sqlite3
 import os
 import requests
 from requests import api
-import csv
-import matplotlib.pyplot as plt
-
 
 
 def getDogs(offset, cur):
@@ -21,17 +18,17 @@ def getDogs(offset, cur):
     return data
 
 def setUp(data, off, cur, conn): 
-    cur.execute("CREATE TABLE IF NOT EXISTS Dog_Breeds (id INTEGER PRIMARY KEY, name TEXT, temperament TEXT, life_span TEXT, origin TEXT, weight DOUBLE)")
+    cur.execute("CREATE TABLE IF NOT EXISTS Dog_Breeds (id INTEGER PRIMARY KEY, name TEXT, temperament TEXT, life_span TEXT, weight FLOAT)")
+    conn.commit()
 
     count = 1
     for x in data: 
-        id = off + count
+        weight = x['weight']['imperial']
+        id = int(off) + count
         name = x['name']
-        temp = x['temperament']
         life = x['life_span']
-        origin = x['origin']
-        weight = x['weight']
-        cur.execute("INSERT OR IGNORE INTO Dog_Breeds (id, name, temperament, life_span, origin, weight) VALUES(?,?,?,?,?,?)", (id, name, temp, life, origin, weight))
+        temp = (x['temperament']).split(',')[0]
+        cur.execute("INSERT OR IGNORE INTO Dog_Breeds (id, name, temperament, life_span, weight) VALUES(?,?,?,?,?)", (id, name, temp, life, weight))
         count += 1
 
     conn.commit()
