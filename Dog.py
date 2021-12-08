@@ -54,7 +54,7 @@ def main():
     setUp(x, cur, conn)
 
     conn.close()
-
+    print("DONE")
 
 if __name__ == "__main__":
     main()
