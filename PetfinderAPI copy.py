@@ -53,11 +53,20 @@ dog_dict=json.loads(dog_dict)
 print(type(dog_dict))
 print(dog_dict)
 
+
+
+# getting primary dog breed and putting in dictionary
+dog_breed_count = {}
 i = 0
 print("UWU")
 dog_dict=dog_dict["animals"]
 for dog in dog_dict:
     dog_breeds=dog_dict[i]["breeds"]
     i=i+1
-    print(dog_breeds['primary'])
-    print("done")
+    main_breed = dog_breeds['primary']
+    if main_breed in dog_breed_count:
+        dog_breed_count[main_breed] = dog_breed_count[main_breed] + 1
+    else:
+        dog_breed_count[main_breed] = 1
+print(dog_breed_count)
+print("done")
