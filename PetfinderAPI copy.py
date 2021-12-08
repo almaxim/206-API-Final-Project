@@ -38,7 +38,10 @@ headers = {
 }
 
 params = (
-    ('page', '1'),
+    ('limit', '40'),
+    ('location', 'Detroit, MI'),
+    ('distance', '10')
+
 )
 
 dog_data = requests.get('https://api.petfinder.com/v2/animals?type=dog&', headers=headers, params=params)
