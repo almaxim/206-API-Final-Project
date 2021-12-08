@@ -17,8 +17,26 @@ def getDogs(offset, cur):
     data = json.loads(page.text)
     return data
 
-def setUp(data, cur, conn): 
-    cur.execute("CREATE TABLE IF NOT EXISTS Dog_Breeds (id INTEGER PRIMARY KEY, name TEXT, temperament TEXT, life_span TEXT, weight FLOAT)")
+def setUpTemp(data, cur, conn): 
+    temp_list = []
+    t = 'temperament'
+
+    for p in data:
+        if t in p:
+            temp = (p['temperament']).split(',')[0]
+            if temp not in temp_list:
+                temp_list.append(temp)
+        else: 
+            continue
+
+    cur.execute("DROP TABLE IF EXISTS Dog_Temperaments")
+    cur.execute("CREATE TABLE Dog_Temperaments (temperanent_id INTEGER PRIMARY KEY, temperament_type TEXT)")
+    for i in range(len(temp_list)):
+        cur.execute("INSERT INTO Dog_Temperaments (temperanent_id,temperament_type) VALUES (?,?)",(i,temp_list[i]))
+    conn.commit()
+
+def setUpBreeds(data, cur, conn): 
+    cur.execute("CREATE TABLE IF NOT EXISTS Dog_Breeds (temperanent_id INTEGER PRIMARY KEY, name TEXT, temperament TEXT, life_span TEXT, weight FLOAT)")
     conn.commit()
 
     t = 'temperament'
@@ -29,10 +47,13 @@ def setUp(data, cur, conn):
         name = x['name']
         life = x['life_span']
         if t in x:
-            temp = (x['temperament']).split(',')[0]
+            typ = (x['temperament']).split(',')[0]
+            cur.execute('SELECT temperanent_id from Dog_Temperaments WHERE temperament_type = ?', (typ,))
+            temp = int(cur.fetchone()[0])
         else: 
             continue
         cur.execute("INSERT OR IGNORE INTO Dog_Breeds (id, name, temperament, life_span, weight) VALUES(?,?,?,?,?)", (id, name, temp, life, weight))
+
 
     conn.commit()
 
@@ -46,15 +67,15 @@ def main():
         cur.execute('SELECT id FROM Dog_Breeds WHERE id = (SELECT MAX(id) FROM Dog_Breeds)')
         start = cur.fetchone()
         off = start[0]
-        print(off)
     except: 
         off = 0
 
     x = getDogs(off, cur) 
-    setUp(x, cur, conn)
+    setUpTemp(x, cur, conn)
+    setUpBreeds(x, cur, conn)
 
     conn.close()
-    print("DONE")
+
 
 if __name__ == "__main__":
     main()
