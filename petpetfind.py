@@ -76,7 +76,6 @@ def breed_dict(dog_dict):
             dog_breed_count[main_breed] = dog_breed_count[main_breed] + 1
         else:
             dog_breed_count[main_breed] = 1
-    print(dog_breed_count)
     return dog_breed_count
 
 

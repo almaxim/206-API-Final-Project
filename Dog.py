@@ -29,10 +29,9 @@ def setUpTemp(data, cur, conn):
         else: 
             continue
 
-    cur.execute("DROP TABLE IF EXISTS Dog_Temperaments")
-    cur.execute("CREATE TABLE Dog_Temperaments (temperanent_id INTEGER PRIMARY KEY, temperament_type TEXT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS Dog_Temperaments (temperanent_id INTEGER PRIMARY KEY, temperament_type TEXT)")
     for i in range(len(temp_list)):
-        cur.execute("INSERT INTO Dog_Temperaments (temperanent_id,temperament_type) VALUES (?,?)",(i,temp_list[i]))
+        cur.execute("INSERT OR IGNORE INTO Dog_Temperaments (temperanent_id,temperament_type) VALUES (?,?)",(i,temp_list[i]))
     conn.commit()
 
 def setUpBreeds(data, cur, conn): 
