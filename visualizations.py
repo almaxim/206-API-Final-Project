@@ -6,6 +6,30 @@ from requests import api
 import petpetfind
 import Dog
 import csv
+import matplotlib.pyplot as plt
+import numpy as np
+
+def most_common_temperament(cur,conn):
+    cur.execute("""
+    SELECT COUNT(*), temperament
+    FROM Dog_Breeds
+    JOIN breed_dog
+    ON breed_dog.main_breed = Dog_Breeds.name
+    GROUP BY Dog_Breeds.temperament
+    """)
+    return cur.fetchall()
+
+def viz_one(data):
+    temperament_type = []
+    number = []
+    for i in data:
+        temperament_type.append(i[1])
+        number.append(i[0])
+    plt.bar(temperament_type, number)
+    plt.xlabel('Temperament Type')
+    plt.ylabel('Number of Dogs')
+    plt.title("Number of Dogs for Temperament Type")
+    plt.show()
 
 
 def main():
@@ -13,6 +37,8 @@ def main():
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/doggo.db')
     cur = conn.cursor()
+    
+
 
     x=petpetfind.getBreeds(cur)
     petpetfind.setUp_breed(x, cur, conn)
@@ -33,6 +59,7 @@ def main():
     cur.execute(combine_table)  
     #Makes list of all dogs in breed_dog with breed, id, gender, temperament, etc.
     myresult = cur.fetchall()
+    # print(myresult)
     
     #find average of each temperament from total
     temp_list = []
@@ -62,7 +89,13 @@ def main():
         for y in data:
             csv_writer.writerow([y[0], y[1]])
 
+
+    combine_data=most_common_temperament(cur,conn)
+    print(combine_data)
+    viz_one(combine_data)
+    print("DONE")
     conn.close()
+
 
 
 if __name__ == "__main__":
