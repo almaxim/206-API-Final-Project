@@ -31,6 +31,23 @@ def viz_one(data):
     plt.title("Number of Dogs for Temperament Type")
     plt.show()
 
+#Create pie chart using averages for each temperament type
+def viz_two(data, lists):
+    temps = []
+    percents = []
+
+    for i in data: 
+        temps.append(i[1])
+    for x in lists: 
+        percents.append(x)
+
+    mylabels = temps
+
+    plt.pie(percents, labels = mylabels)
+    plt.title("Average Perecent of Dogs for Adoption in a Group with a Temperament")
+    plt.show()
+
+
 
 def main():
 
@@ -59,12 +76,19 @@ def main():
     cur.execute(combine_table)  
     #Makes list of all dogs in breed_dog with breed, id, gender, temperament, etc.
     myresult = cur.fetchall()
-    # print(myresult)
+
+    #dictionary of dog temperament id and temperament name
+    cur.execute('SELECT temperanent_id,temperament_type FROM Dog_Temperaments')
+    names = cur.fetchall()
+    temperament_name = {}
+    for x in names:
+        temperament_name[x[0]] = x[1]
+
     
     #find average of each temperament from total
     temp_list = []
     #dictionary with temp and times it appears
-    temp_count = {} 
+    temp_count = {}
     avg_list = []
 
     for t in myresult: 
@@ -91,9 +115,8 @@ def main():
 
 
     combine_data=most_common_temperament(cur,conn)
-    print(combine_data)
     viz_one(combine_data)
-    print("DONE")
+    viz_two(combine_data, avg_list)
     conn.close()
 
 
