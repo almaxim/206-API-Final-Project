@@ -9,6 +9,7 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import re
 
 def most_common_temperament(cur,conn):
     cur.execute("""
@@ -31,6 +32,44 @@ def most_common_temperament_vers1(cur,conn):
     GROUP BY Dog_Breeds.temperament
     """)
     return cur.fetchall()
+
+def most_common_size(cur, conn):
+    cur.execute("""
+    SELECT COUNT(*), weight
+    FROM Dog_Breeds
+    JOIN breed_dog
+    ON breed_dog.main_breed = Dog_Breeds.name
+    GROUP BY Dog_Breeds.weight
+    """)
+    return cur.fetchall()
+    
+def viz_three(data):
+    i = 0
+    rand_number=[]
+    expression_lower = r'\S+ -'
+    expression_higher = r'- \S+'
+    for dog in data:
+        if isinstance(data[i][1], str) == True:
+            string = data[i][1]
+            num_1=re.findall(expression_lower, string)
+            for match in num_1:
+                num_1 = float(num_1[0][0:-2])
+            num_2 = re.findall(expression_higher, string)
+            for match in num_2:
+                num_2 = float(num_2[0][2:])
+            try:
+                num_3 = random.randint(num_1,num_2)
+            except:
+                num_3 = num_2
+        else:
+            num_3 = float(data[i][1])
+        rand_number.append(num_3)
+        i = i+1
+    plt.hist(rand_number, density=False, bins=10, rwidth=0.9)  
+    plt.ylabel('Number of Dogs')
+    plt.xlabel('Weight Range (lbs)')
+    plt.title("Number of Dogs for Weight Range (lbs)")
+    plt.show()
 
 def viz_one(data):
     color_list=[]
@@ -69,12 +108,12 @@ def viz_two(data, lists, temp_name):
         percents.append(x)
 
     mylabels = temps
-    mycolors = ['red', 'pink', 'orange', 'yellow', 'green','blue', 'navy', 'indigo', 'purple', 'violet', 'black', 'grey']
 
     plt.pie(percents,labels = mylabels, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
     plt.axis('equal')
     plt.title("Average Percent of Dogs for Adoption in a Group with a Temperament", pad = 15)
     plt.show()
+
 
 
 def main():
@@ -83,7 +122,6 @@ def main():
     conn = sqlite3.connect(path+'/doggo.db')
     cur = conn.cursor()
     
-
 
     x=petpetfind.getBreeds(cur)
     petpetfind.setUp_breed(x, cur, conn)
@@ -104,7 +142,6 @@ def main():
     cur.execute(combine_table)  
     #Makes list of all dogs in breed_dog with breed, id, gender, temperament, etc.
     myresult = cur.fetchall()
-
     #dictionary of dog temperament id and temperament name
     cur.execute('SELECT temperanent_id,temperament_type FROM Dog_Temperaments')
     names = cur.fetchall()
@@ -144,8 +181,11 @@ def main():
 
     combine_data=most_common_temperament(cur,conn)
     combine_data_1=most_common_temperament_vers1(cur,conn)
+    combine_data_2 = most_common_size(cur,conn)
+    # combine_weight_data=most_common_size(cur,conn)
     viz_one(combine_data)
     viz_two(combine_data_1, avg_list, temperament_name)
+    viz_three(combine_data_2)
     conn.close()
 
 
