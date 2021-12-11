@@ -11,7 +11,7 @@ import random
 
 
 def getBreeds(cur):
-    a = random.randint(1,10)
+    a = random.randint(1,50)
     # pf = Petfinder(key="eKmHUqczFwsEYpfDBRo4UY3IXfkq3sL8kpWH7PohKY2UbNDd2P", secret="EqBhbmXTTd95OAohkgdTQrl0wwTP2kZMIfpkjBKO")
     # dogs = pf.animal_types('dog')
     apiKey="eKmHUqczFwsEYpfDBRo4UY3IXfkq3sL8kpWH7PohKY2UbNDd2P"
@@ -36,8 +36,8 @@ def getBreeds(cur):
 
     params = (
         ('limit', '25'),
-        ('location', 'Detroit, MI'),
-        ('distance', '100'),
+        # ('location', 'Detroit, MI'),
+        # ('distance', '100'),
         ('page', a)
 
     )
