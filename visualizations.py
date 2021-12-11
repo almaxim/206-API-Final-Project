@@ -32,21 +32,24 @@ def viz_one(data):
     plt.show()
 
 #Create pie chart using averages for each temperament type
-def viz_two(data, lists):
+def viz_two(data, lists, temp_name):
     temps = []
     percents = []
 
     for i in data: 
-        temps.append(i[1])
+        id = int(i[1])
+        name = temp_name.get(id)
+        temps.append(name)
     for x in lists: 
         percents.append(x)
 
     mylabels = temps
+    mycolors = ['red', 'pink', 'orange', 'yellow', 'green','blue', 'navy', 'indigo', 'purple', 'violet', 'black', 'grey']
 
-    plt.pie(percents, labels = mylabels)
-    plt.title("Average Perecent of Dogs for Adoption in a Group with a Temperament")
+    plt.pie(percents,labels = mylabels, colors = mycolors, shadow=True, startangle=90, textprops={'fontsize': 8})
+    plt.axis('equal')
+    plt.title("Average Perecent of Dogs for Adoption in a Group with a Temperament", pad = 15)
     plt.show()
-
 
 
 def main():
@@ -116,7 +119,7 @@ def main():
 
     combine_data=most_common_temperament(cur,conn)
     viz_one(combine_data)
-    viz_two(combine_data, avg_list)
+    viz_two(combine_data, avg_list, temperament_name)
     conn.close()
 
 
