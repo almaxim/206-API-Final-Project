@@ -25,9 +25,9 @@ def most_common_temperament(cur,conn):
 
 def most_common_temperament_vers1(cur,conn):
     cur.execute("""
-    SELECT COUNT(*), temperament
+    SELECT temperament
     FROM Dog_Breeds
-    JOIN breed_dog
+    INNER JOIN breed_dog
     ON breed_dog.main_breed = Dog_Breeds.name
     GROUP BY Dog_Breeds.temperament
     """)
@@ -42,7 +42,81 @@ def most_common_size(cur, conn):
     GROUP BY Dog_Breeds.weight
     """)
     return cur.fetchall()
+
+def most_common_breed(cur,conn):
+    cur.execute("""
+    SELECT COUNT(*), Dog_Breeds.name
+    FROM Dog_Breeds
+    JOIN breed_dog
+    ON breed_dog.main_breed = Dog_Breeds.name
+    GROUP BY Dog_Breeds.name
+    """)
+    return cur.fetchall()
+
+def viz_one(data):
+    color_list=[]
+    temperament_type = []
+    number = []
+    for i in data:
+        temperament_type.append(i[1])
+        number.append(i[0])
+        r = random.random()
+        b = random.random()
+        g = random.random()
+        c = (r, g, b)
+        color_list.append(c)
+    plt.bar(temperament_type, number, color = color_list)
+    plt.xticks(rotation=90)
+    plt.xlabel('Temperament Type')
+    plt.ylabel('Number of Dogs')
+    plt.title("Number of Dogs for Temperament Type")
+    plt.show()
+
+# Create pie chart using averages for each temperament type
+def viz_two(data):
+    color_list=[]
+    temperament_type = []
+    number = []
+    for i in data:
+        temperament_type.append(i[1])
+        number.append(i[0])
+        r = random.random()
+        b = random.random()
+        g = random.random()
+        c = (r, g, b)
+        color_list.append(c)
     
+    mylabels = temperament_type
+
+    plt.pie(number,labels = mylabels, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
+    plt.axis('equal')
+    plt.title("Average Percent of Dogs for Adoption in a Group with a Temperament", pad = 15)
+    plt.show()
+
+
+# def viz_two(data, lists, temp_name):
+#     temps = []
+#     percents = []
+#     color_list=[]
+#     for i in data: 
+#         print(data)
+#         id = int(i[1])
+#         name = temp_name.get(id)
+#         temps.append(name)
+#         r = random.random()
+#         b = random.random()
+#         g = random.random()
+#         c = (r, g, b)
+#         color_list.append(c)
+#     for x in lists: 
+#         percents.append(x)
+
+#     mylabels = temps
+
+#     plt.pie(percents,labels = mylabels, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
+#     plt.axis('equal')
+#     plt.title("Average Percent of Dogs for Adoption in a Group with a Temperament", pad = 15)
+#     plt.show()
 def viz_three(data):
     i = 0
     rand_number=[]
@@ -71,47 +145,23 @@ def viz_three(data):
     plt.title("Number of Dogs for Weight Range (lbs)")
     plt.show()
 
-def viz_one(data):
+def viz_four(data):
     color_list=[]
-    temperament_type = []
     number = []
+    breed=[]
     for i in data:
-        temperament_type.append(i[1])
+        breed.append(i[1])
         number.append(i[0])
         r = random.random()
         b = random.random()
         g = random.random()
         c = (r, g, b)
         color_list.append(c)
-    plt.bar(temperament_type, number, color = color_list)
+    plt.bar(breed, number, color = color_list)
     plt.xticks(rotation=90)
-    plt.xlabel('Temperament Type')
+    plt.xlabel('Breed')
     plt.ylabel('Number of Dogs')
-    plt.title("Number of Dogs for Temperament Type")
-    plt.show()
-
-#Create pie chart using averages for each temperament type
-def viz_two(data, lists, temp_name):
-    temps = []
-    percents = []
-    color_list=[]
-    for i in data: 
-        id = int(i[1])
-        name = temp_name.get(id)
-        temps.append(name)
-        r = random.random()
-        b = random.random()
-        g = random.random()
-        c = (r, g, b)
-        color_list.append(c)
-    for x in lists: 
-        percents.append(x)
-
-    mylabels = temps
-
-    plt.pie(percents,labels = mylabels, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
-    plt.axis('equal')
-    plt.title("Average Percent of Dogs for Adoption in a Group with a Temperament", pad = 15)
+    plt.title("Number of Dogs by Recognized Breeds")
     plt.show()
 
 
@@ -146,30 +196,31 @@ def main():
     cur.execute('SELECT temperanent_id,temperament_type FROM Dog_Temperaments')
     names = cur.fetchall()
     temperament_name = {}
+    
     for x in names:
         temperament_name[x[0]] = x[1]
-
     
     #find average of each temperament from total
     temp_list = []
     #dictionary with temp and times it appears
     temp_count = {}
     avg_list = []
-
-    for t in myresult: 
+    # avg_dict ={}
+    for t in myresult:
         val = int(t[5])
-
         if val not in temp_list: 
             temp_list.append(val)
             temp_count[val] = 1
         else: 
             temp_count[val] = temp_count.get(val) + 1
 
-    for x in temp_list:
+    for x in temp_count:
         avg_list.append(temp_count.get(x) / len(myresult))
+
 
     vals = zip(temp_list, avg_list)
     data = list(vals)
+
     dir = os.path.dirname('DogTemperaments.txt')
     out_file = open(os.path.join(dir, 'DogTemperaments.txt'), "w")
     with open('DogTemperaments.txt') as f:
@@ -182,10 +233,16 @@ def main():
     combine_data=most_common_temperament(cur,conn)
     combine_data_1=most_common_temperament_vers1(cur,conn)
     combine_data_2 = most_common_size(cur,conn)
+    combine_data_3=most_common_breed(cur,conn)
     # combine_weight_data=most_common_size(cur,conn)
+    viz_two(combine_data)
+    # viz_two(combine_data_1, avg_list, temperament_name)
+
     viz_one(combine_data)
-    viz_two(combine_data_1, avg_list, temperament_name)
+
+
     viz_three(combine_data_2)
+    viz_four(combine_data_3)
     conn.close()
 
 
