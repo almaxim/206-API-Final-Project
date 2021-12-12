@@ -73,7 +73,6 @@ def viz_one(data):
     plt.tight_layout()
     plt.show()  
 
-# Create pie chart using averages for each temperament type
 def viz_two(data):
     color_list=[]
     temperament_type = []
@@ -90,35 +89,10 @@ def viz_two(data):
     mylabels = temperament_type
     patches, texts = plt.pie(number, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
     plt.legend(patches, mylabels, loc="best")
-    # plt.pie(number,labels = mylabels, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
     plt.axis('equal')
     plt.title("Average Percent of Dogs for Adoption in a Group with a Temperament", pad = 15)
     plt.show()
 
-
-# def viz_two(data, lists, temp_name):
-#     temps = []
-#     percents = []
-#     color_list=[]
-#     for i in data: 
-#         print(data)
-#         id = int(i[1])
-#         name = temp_name.get(id)
-#         temps.append(name)
-#         r = random.random()
-#         b = random.random()
-#         g = random.random()
-#         c = (r, g, b)
-#         color_list.append(c)
-#     for x in lists: 
-#         percents.append(x)
-
-#     mylabels = temps
-
-#     plt.pie(percents,labels = mylabels, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
-#     plt.axis('equal')
-#     plt.title("Average Percent of Dogs for Adoption in a Group with a Temperament", pad = 15)
-#     plt.show()
 def viz_three(data):
     i = 0
     rand_number=[]
@@ -227,7 +201,7 @@ def main():
     #dictionary with temp and times it appears
     temp_count = {}
     avg_list = []
-    # avg_dict ={}
+    
     for t in myresult:
         val = int(t[5])
         if val not in temp_list: 

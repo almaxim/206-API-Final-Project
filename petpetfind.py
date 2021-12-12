@@ -12,8 +12,6 @@ import random
 
 def getBreeds(cur):
     a = random.randint(1,50)
-    # pf = Petfinder(key="eKmHUqczFwsEYpfDBRo4UY3IXfkq3sL8kpWH7PohKY2UbNDd2P", secret="EqBhbmXTTd95OAohkgdTQrl0wwTP2kZMIfpkjBKO")
-    # dogs = pf.animal_types('dog')
     apiKey="eKmHUqczFwsEYpfDBRo4UY3IXfkq3sL8kpWH7PohKY2UbNDd2P"
     secret="EqBhbmXTTd95OAohkgdTQrl0wwTP2kZMIfpkjBKO"
     data = {
@@ -22,7 +20,6 @@ def getBreeds(cur):
     'client_secret': "EqBhbmXTTd95OAohkgdTQrl0wwTP2kZMIfpkjBKO"
     }
     response = requests.post('https://api.petfinder.com/v2/oauth2/token', data=data)
-    # token_code=(response.text)
     token_dict=response.json()
     token_code=str(token_dict['access_token'])
 
@@ -36,8 +33,6 @@ def getBreeds(cur):
 
     params = (
         ('limit', '25'),
-        # ('location', 'Detroit, MI'),
-        # ('distance', '100'),
         ('page', a)
 
     )
