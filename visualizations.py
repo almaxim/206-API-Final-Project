@@ -164,6 +164,53 @@ def viz_four(data):
     plt.title("Number of Dogs by Recognized Breeds")
     plt.show()
 
+def viz_three(data):
+    i = 0
+    rand_number=[]
+    expression_lower = r'\S+ -'
+    expression_higher = r'- \S+'
+    for dog in data:
+        if isinstance(data[i][1], str) == True:
+            string = data[i][1]
+            num_1=re.findall(expression_lower, string)
+            for match in num_1:
+                num_1 = float(num_1[0][0:-2])
+            num_2 = re.findall(expression_higher, string)
+            for match in num_2:
+                num_2 = float(num_2[0][2:])
+            try:
+                num_3 = random.randint(num_1,num_2)
+            except:
+                num_3 = num_2
+        else:
+            num_3 = float(data[i][1])
+        rand_number.append(num_3)
+        i = i+1
+    plt.hist(rand_number, density=False, bins=10, rwidth=0.9)  
+    plt.ylabel('Number of Dogs')
+    plt.xlabel('Weight Range (lbs)')
+    plt.title("Number of Dogs for Weight Range (lbs)")
+    plt.show()
+
+def viz_four(data, lists): 
+    percents = []
+    temps = []
+
+    for i in data: 
+        id = int(i[1])
+        temps.append(id)
+    for x in lists: 
+        percents.append(x)
+    
+    N = len(percents)
+    colors = np.random.rand(N)
+
+    plt.scatter(temps, percents, c=colors, alpha=0.5)
+    plt.xlabel('Temperament Type (based on id order)')
+    plt.ylabel('Average Percent of Dogs')
+    plt.title("Average(%) of Dogs for Adoption in a Group with a Temperament")
+    plt.show()
+
 
 
 def main():
