@@ -70,7 +70,8 @@ def viz_one(data):
     plt.xlabel('Temperament Type')
     plt.ylabel('Number of Dogs')
     plt.title("Number of Dogs for Temperament Type")
-    plt.show()
+    plt.tight_layout()
+    plt.show()  
 
 # Create pie chart using averages for each temperament type
 def viz_two(data):
@@ -163,34 +164,7 @@ def viz_four(data):
     plt.xlabel('Breed')
     plt.ylabel('Number of Dogs')
     plt.title("Number of Dogs For Adoption by Recognized Breeds")
-    plt.show()
-
-def viz_three(data):
-    i = 0
-    rand_number=[]
-    expression_lower = r'\S+ -'
-    expression_higher = r'- \S+'
-    for dog in data:
-        if isinstance(data[i][1], str) == True:
-            string = data[i][1]
-            num_1=re.findall(expression_lower, string)
-            for match in num_1:
-                num_1 = float(num_1[0][0:-2])
-            num_2 = re.findall(expression_higher, string)
-            for match in num_2:
-                num_2 = float(num_2[0][2:])
-            try:
-                num_3 = random.randint(num_1,num_2)
-            except:
-                num_3 = num_2
-        else:
-            num_3 = float(data[i][1])
-        rand_number.append(num_3)
-        i = i+1
-    plt.hist(rand_number, density=False, bins=10, rwidth=0.9)  
-    plt.ylabel('Number of Dogs')
-    plt.xlabel('Weight Range (lbs)')
-    plt.title("Number of Dogs for Adoption by Weight Range (lbs)")
+    plt.tight_layout()
     plt.show()
 
 def viz_five(data, lists): 
@@ -282,13 +256,10 @@ def main():
     combine_data_1=most_common_temperament_vers1(cur,conn)
     combine_data_2 = most_common_size(cur,conn)
     combine_data_3=most_common_breed(cur,conn)
-    # combine_weight_data=most_common_size(cur,conn)
-    viz_two(combine_data)
-    # viz_two(combine_data_1, avg_list, temperament_name)
+
 
     viz_one(combine_data)
-
-
+    viz_two(combine_data)
     viz_three(combine_data_2)
     viz_four(combine_data_3)
     viz_five(combine_data_1, avg_list)
