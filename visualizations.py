@@ -25,9 +25,9 @@ def most_common_temperament(cur,conn):
 
 def most_common_temperament_vers1(cur,conn):
     cur.execute("""
-    SELECT temperament
+    SELECT COUNT(*),temperament
     FROM Dog_Breeds
-    INNER JOIN breed_dog
+    JOIN breed_dog
     ON breed_dog.main_breed = Dog_Breeds.name
     GROUP BY Dog_Breeds.temperament
     """)
@@ -87,8 +87,9 @@ def viz_two(data):
         color_list.append(c)
     
     mylabels = temperament_type
-
-    plt.pie(number,labels = mylabels, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
+    patches, texts = plt.pie(number, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
+    plt.legend(patches, mylabels, loc="best")
+    # plt.pie(number,labels = mylabels, colors = color_list, shadow=True, startangle=90, textprops={'fontsize': 8})
     plt.axis('equal')
     plt.title("Average Percent of Dogs for Adoption in a Group with a Temperament", pad = 15)
     plt.show()
@@ -142,7 +143,7 @@ def viz_three(data):
     plt.hist(rand_number, density=False, bins=10, rwidth=0.9)  
     plt.ylabel('Number of Dogs')
     plt.xlabel('Weight Range (lbs)')
-    plt.title("Number of Dogs for Weight Range (lbs)")
+    plt.title("Number of Dogs for Adoption by Weight Range (lbs)")
     plt.show()
 
 def viz_four(data):
@@ -161,7 +162,7 @@ def viz_four(data):
     plt.xticks(rotation=90)
     plt.xlabel('Breed')
     plt.ylabel('Number of Dogs')
-    plt.title("Number of Dogs by Recognized Breeds")
+    plt.title("Number of Dogs For Adoption by Recognized Breeds")
     plt.show()
 
 def viz_three(data):
@@ -189,10 +190,10 @@ def viz_three(data):
     plt.hist(rand_number, density=False, bins=10, rwidth=0.9)  
     plt.ylabel('Number of Dogs')
     plt.xlabel('Weight Range (lbs)')
-    plt.title("Number of Dogs for Weight Range (lbs)")
+    plt.title("Number of Dogs for Adoption by Weight Range (lbs)")
     plt.show()
 
-def viz_four(data, lists): 
+def viz_five(data, lists): 
     percents = []
     temps = []
 
@@ -290,6 +291,8 @@ def main():
 
     viz_three(combine_data_2)
     viz_four(combine_data_3)
+    viz_five(combine_data_1, avg_list)
+
     conn.close()
 
 
